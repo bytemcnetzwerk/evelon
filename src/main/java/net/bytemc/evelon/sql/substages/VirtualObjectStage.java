@@ -71,7 +71,7 @@ public final class VirtualObjectStage extends AbstractSubElementStage<Object> {
             var object = Reflections.readField(value, row);
             var objectClass = new RepositoryClass<>(row.getType());
 
-            if(originalStage instanceof SQLElementStageTransformer transformer) {
+            if (originalStage instanceof SQLElementStageTransformer transformer) {
                 // we need to roll back the value to the original object type
                 object = transformer.transform(object);
             }
@@ -131,7 +131,7 @@ public final class VirtualObjectStage extends AbstractSubElementStage<Object> {
                 throw new UnsupportedOperationException("Cannot create instance of " + row.getType().getSimpleName() + " for " + clazz.clazz().getSimpleName());
             }
 
-            if(originalStage instanceof SQLElementStageTransformer transformer) {
+            if (originalStage instanceof SQLElementStageTransformer transformer) {
                 // we need to transform the value to the executed object type
                 value = transformer.rollback(value, row);
             }
@@ -145,7 +145,7 @@ public final class VirtualObjectStage extends AbstractSubElementStage<Object> {
     }
 
     private <T> Stage<T> transform(Stage<T> stage) {
-        if(stage instanceof SQLElementStageTransformer transformer) {
+        if (stage instanceof SQLElementStageTransformer transformer) {
             stage = transformer.transformTo();
             if (stage instanceof SQLElementStageTransformer<?>) {
                 throw new IllegalStateException("Transformer can't be a transformer");

@@ -42,20 +42,44 @@ public final class SQLConnection {
             }
         } catch (SQLException exception) {
             System.err.println("Error while execute update: " + exception.getMessage() + " with " + exception.getCause().toString());
+            if (Debugger.isEnable()) {
+                exception.printStackTrace(System.err);
+            }
         } finally {
             Debugger.log(query);
         }
         return defaultValue;
     }
 
-    public static int executeUpdate(String query) {
+    public static int executeUpdate(String query, Object... params) {
         try (var connection = POOL.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            int index = 1;
+            for (Object param : params) {
+                preparedStatement.setObject(index++, param);
+            }
             return preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             System.err.println("Error while executing update: " + query);
+            if (Debugger.isEnable()) {
+                exception.printStackTrace(System.err);
+            }
             return -1;
         } finally {
             Debugger.log(query);
+        }
+    }
+
+    public static PreparedStatement prepare(String query) {
+        try (var connection = POOL.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            return preparedStatement;
+        } catch (SQLException exception) {
+            System.err.println("Error while preparing statement: " + query);
+            if (Debugger.isEnable()) {
+                exception.printStackTrace(System.err);
+            }
+            return null;
+        } finally {
+            Debugger.log("PREPARED STATEMENT: " + query);
         }
     }
 }

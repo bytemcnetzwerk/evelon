@@ -39,3 +39,5 @@ build/
 .DS_Store
 /gradle.properties
 .gradle
+/configs/
+/src/test/java/net/bytemc/evelon/test/mariadb/custom/

@@ -36,7 +36,7 @@ public final class TableCreationProcess {
         // get stage of current repository class
         var stage = StageHandler.getInstance().getElementStage(repository.repositoryClass().clazz());
 
-        if(!(stage instanceof VirtualObjectStage virtualObjectStage)) {
+        if (!(stage instanceof VirtualObjectStage virtualObjectStage)) {
             System.err.println("The stage of the repository class " + repository.repositoryClass().clazz().getName() + " is not a virtual object stage. This is not supported.");
             return;
         }
@@ -44,7 +44,7 @@ public final class TableCreationProcess {
         var queries = new ArrayList<String>();
         virtualObjectStage.onParentTableCollectData(queries, repository.getName(), repository.repositoryClass(), null);
 
-        for(int i = queries.size() - 1; i >= 0; i--) {
+        for (int i = queries.size() - 1; i >= 0; i--) {
             SQLConnection.executeUpdate(queries.get(i));
         }
     }
@@ -55,7 +55,7 @@ public final class TableCreationProcess {
      * @return the query with the primary key appended, if the field has a primary key annotation
      */
     public static String appendPrimaryKey(Field field, String query) {
-        if(field.isAnnotationPresent(PrimaryKey.class)) {
+        if (field.isAnnotationPresent(PrimaryKey.class)) {
             query = query + " PRIMARY KEY";
         }
         return query.toString();
