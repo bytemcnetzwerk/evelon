@@ -41,3 +41,4 @@ build/
 .gradle
 /configs/
 /src/test/java/net/bytemc/evelon/test/mariadb/custom/
+/h2_database.mv.db
