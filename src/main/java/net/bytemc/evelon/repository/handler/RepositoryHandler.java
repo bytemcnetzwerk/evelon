@@ -1,12 +1,15 @@
 package net.bytemc.evelon.repository.handler;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.bytemc.evelon.misc.Reflections;
 import net.bytemc.evelon.repository.Filter;
 import net.bytemc.evelon.repository.Repository;
 import net.bytemc.evelon.repository.RepositoryHelper;
 import net.bytemc.evelon.repository.properties.StartupProperties;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.function.Supplier;
@@ -25,13 +28,13 @@ public abstract class RepositoryHandler<K, V> {
         this(Repository.create(clazz, StartupProperties.empty()));
     }
 
-    public abstract V get(K k);
+    public abstract @Nullable V get(@NonNull K k);
 
-    public void update(V v) {
+    public void update(@NotNull V v) {
         repository.query().chronological().upsert(v);
     }
 
-    public void delete(V v) {
+    public void delete(@NotNull V v) {
         var primaries = repository.repositoryClass().getPrimaries();
         if (primaries.isEmpty()) {
             throw new UnsupportedOperationException(
@@ -45,7 +48,7 @@ public abstract class RepositoryHandler<K, V> {
         deletion.delete();
     }
 
-    public V getOrCreate(K k, Supplier<V> creation) {
+    public @NotNull V getOrCreate(@NotNull K k, Supplier<V> creation) {
         V query = get(k);
         if (query != null) {
             return query;
