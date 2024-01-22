@@ -64,24 +64,34 @@ public final class RepositoryQuery<T> {
         StorageHandler.getCurrentStorage().create(this, value);
     }
 
+    public void save(T value) {
+        StorageHandler.getStorage(LocalStorage.class).update(this, value);
+        StorageHandler.getCurrentStorage().update(this, value);
+    }
+
     public void cache(T value) {
         StorageHandler.getStorage(LocalStorage.class).create(this, value);
     }
 
-    public void createIfNotExists(T value) {
+    public boolean createIfNotExists(T value) {
         var localStorage = StorageHandler.getStorage(LocalStorage.class);
 
         for (var primary : getRepository().repositoryClass().getPrimaries()) {
             filter(Filter.match(SQLHelper.getRowName(primary), Reflections.readField(value, primary)));
         }
 
+        boolean created = false;
+
         if(!localStorage.exists(this)) {
             localStorage.create(this, value);
+            created = true;
         }
         var databaseStorage = StorageHandler.getCurrentStorage();
         if(!databaseStorage.exists(this)) {
             databaseStorage.create(this, value);
+            created = true;
         }
+        return created;
     }
 
     public void clear() {
