@@ -53,7 +53,7 @@ public final class TablenameStep extends AnalyseStep {
     @Override
     public void manipulate(@NotNull Repository<?> repository) {
         // change the name of the current table if exists to the new one.
-        SQLConnection.executeUpdate("RENAME TABLE IF EXISTS " + repository.repositoryClass().clazz().getSimpleName() + " TO " + repository.getName() + ";");
+        SQLConnection.getInstance().executeUpdate("RENAME TABLE IF EXISTS " + repository.repositoryClass().clazz().getSimpleName() + " TO " + repository.getName() + ";");
     }
 
 }

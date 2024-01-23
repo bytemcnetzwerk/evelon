@@ -32,7 +32,7 @@ public final class MathCalculationProcess {
         var querySignature = repositoryQuery.getRepository().getName() + SQLHelper.getDatabaseFilterQuery(repositoryQuery.getFilters());
         var options = (key.equalsIgnoreCase("count") ? new String[]{keyName, querySignature} : new String[]{id, keyName, querySignature});
 
-        return (T) SQLConnection.executeQuery(query.apply(options), resultSet -> {
+        return (T) SQLConnection.getInstance().executeQuery(query.apply(options), resultSet -> {
             if (resultSet.next()) {
                 return resultSet.getObject(keyName);
             }

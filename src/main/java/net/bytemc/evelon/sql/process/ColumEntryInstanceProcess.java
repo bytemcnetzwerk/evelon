@@ -37,7 +37,7 @@ public final class ColumEntryInstanceProcess {
         var primaryNames = String.join(", ", repository.repositoryClass().getPrimaries().stream().map(SQLHelper::getRowName).toList());
         var innerJoins = String.join(" ", neededTables.keySet().stream().filter(it -> !it.equalsIgnoreCase(repositoryQuery.getRepository().getName())).map(it -> "INNER JOIN " + it + " USING (" + primaryNames + ")").toList());
 
-        var databaseResults = SQLConnection.executeQuery(query.toString().formatted(innerJoins), resultSet -> {
+        var databaseResults = SQLConnection.getInstance().executeQuery(query.toString().formatted(innerJoins), resultSet -> {
             var elements = new ArrayList<SQLResultSet>();
             while (resultSet.next()) {
                 var result = new SQLResultSet();

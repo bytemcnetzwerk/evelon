@@ -108,7 +108,7 @@ public final class MapObjectStage extends AbstractSubElementStage<Map<?, ?>> {
         var keyStage = getStageHandler().getElementStage(keyType);
         var valueStage = getStageHandler().getElementStage(valueType);
 
-        return SQLConnection.executeQuery("SELECT * FROM " + tableName, result -> {
+        return SQLConnection.getInstance().executeQuery("SELECT * FROM " + tableName, result -> {
             while (result.next()) {
                 if (keyStage instanceof SQLElementStage<?> keyElementStage) {
                     if (valueStage instanceof SQLElementStage<?> valueElementStage) {

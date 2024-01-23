@@ -31,9 +31,9 @@ public final class SQLHelper {
 
     public static boolean isTableExists(String tableName) {
         if(Evelon.getCradinates().databaseProtocol() == DatabaseProtocol.H2) {
-            return  SQLConnection.executeQuery(("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = " + Schema.encloseSchema("%s") + ";").formatted(tableName), ResultSet::next, false);
+            return  SQLConnection.getInstance().executeQuery(("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = " + Schema.encloseSchema("%s") + ";").formatted(tableName), ResultSet::next, false);
         }
-        return SQLConnection.executeQuery(("SHOW TABLES LIKE " + Schema.encloseSchema("%s") + ";").formatted(tableName), ResultSet::next, false);
+        return SQLConnection.getInstance().executeQuery(("SHOW TABLES LIKE " + Schema.encloseSchema("%s") + ";").formatted(tableName), ResultSet::next, false);
     }
 
     public static String getRowName(Field field) {
@@ -41,7 +41,7 @@ public final class SQLHelper {
     }
 
     public static List<RowData> getRowData(String table, String... rowId) {
-        return SQLConnection.executeQuery("SHOW COLUMNS FROM %s;".formatted(table), resultSet -> {
+        return SQLConnection.getInstance().executeQuery("SHOW COLUMNS FROM %s;".formatted(table), resultSet -> {
             var list = new ArrayList<RowData>();
             while (resultSet.next()) {
                 list.add(new RowData(resultSet.getString("field"), null, null));

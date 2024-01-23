@@ -45,7 +45,7 @@ public final class TableCreationProcess {
         virtualObjectStage.onParentTableCollectData(queries, repository.getName(), repository.repositoryClass(), null);
 
         for(int i = queries.size() - 1; i >= 0; i--) {
-            SQLConnection.executeUpdate(queries.get(i));
+            SQLConnection.getInstance().executeUpdate(queries.get(i));
         }
     }
 

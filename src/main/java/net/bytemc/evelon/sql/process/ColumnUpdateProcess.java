@@ -19,7 +19,7 @@ public final class ColumnUpdateProcess {
         }
         var queries = virtualObjectStage.onAnonymousUpdateParentElement(query.getRepository().getName(), null, query.getRepository(), query, query.getRepository().repositoryClass(), value);
         for(int i = queries.size() - 1; i >= 0; i--) {
-            SQLConnection.executeUpdate(queries.get(i));
+            SQLConnection.getInstance().executeUpdate(queries.get(i));
         }
     }
 }

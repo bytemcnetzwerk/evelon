@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.bytemc.evelon.DatabaseProtocol;
 import net.bytemc.evelon.Evelon;
+import net.bytemc.evelon.cradinates.DatabaseCradinates;
 import net.bytemc.evelon.h2.H2Connection;
 import org.h2.Driver;
 
@@ -37,8 +38,11 @@ public final class HikariDatabaseConnector {
     private static HikariDataSource hikariDataSource;
 
     public HikariDatabaseConnector createConnection(DatabaseProtocol databaseProtocol) {
+        return createConnection(databaseProtocol, Evelon.getCradinates());
+    }
+
+    public HikariDatabaseConnector createConnection(DatabaseProtocol databaseProtocol, DatabaseCradinates cradinates) {
         var hikariConfig = new HikariConfig();
-        var cradinates = Evelon.getCradinates();
 
         hikariConfig.setJdbcUrl(String.format(CONNECT_URL_FORMAT, databaseProtocol.toString(), cradinates.hostname(), cradinates.port(), cradinates.database()));
 

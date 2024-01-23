@@ -31,7 +31,7 @@ public final class ColumnEntryCreationProcess {
             Collections.reverse(queries);
 
             for (var creationQuery : queries) {
-                SQLConnection.executeUpdate(creationQuery);
+                SQLConnection.getInstance().executeUpdate(creationQuery);
             }
         } else {
             System.err.println("The stage of the repository class " + value.getClass().getName() + " is not a sub element stage. This is not supported.");

@@ -115,7 +115,7 @@ public final class CollectionObjectStage extends AbstractSubElementStage<Collect
         var listType = Reflections.readGenericFromClass(parentField)[0];
 
         // we can't use the result, because we need to collect all elements
-        return SQLConnection.executeQuery("SELECT * FROM " + tableName + ";", (result) -> {
+        return SQLConnection.getInstance().executeQuery("SELECT * FROM " + tableName + ";", (result) -> {
             var list = new ArrayList<>();
             var stage = getStageHandler().getElementStage(listType);
             while (result.next()) {

@@ -18,6 +18,8 @@ package net.bytemc.evelon.sql;
 
 import net.bytemc.evelon.DatabaseProtocol;
 import net.bytemc.evelon.Debugger;
+import net.bytemc.evelon.Evelon;
+import net.bytemc.evelon.cradinates.DatabaseCradinates;
 import net.bytemc.evelon.sql.connection.HikariDatabaseConnector;
 
 import java.sql.PreparedStatement;
@@ -26,15 +28,34 @@ import java.sql.SQLException;
 
 public final class SQLConnection {
 
-    private static HikariDatabaseConnector POOL;
+    private static SQLConnection INSTANCE;
 
-    public static void init(DatabaseProtocol databaseProtocol) {
-        POOL = new HikariDatabaseConnector().createConnection(databaseProtocol);
-        Debugger.log("Established connection to " + databaseProtocol + " server");
+    private final HikariDatabaseConnector pool;
+
+    private SQLConnection(DatabaseProtocol protocol, DatabaseCradinates cradinates) {
+        if (INSTANCE == null) {
+            INSTANCE = this;
+        }
+
+        this.pool = new HikariDatabaseConnector().createConnection(protocol, cradinates);
+
+        Debugger.log("Established connection to " + protocol + " server");
     }
 
-    public static <T> T executeQuery(String query, SQLFunction<ResultSet, T> function, T defaultValue) {
-        try (var connection = POOL.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    public static SQLConnection init(DatabaseProtocol databaseProtocol) {
+        return new SQLConnection(databaseProtocol, Evelon.getCradinates());
+    }
+
+    public static SQLConnection init(DatabaseCradinates cradinates) {
+        return new SQLConnection(cradinates.databaseProtocol(), cradinates);
+    }
+
+    public static SQLConnection getInstance() {
+        return INSTANCE;
+    }
+
+    public <T> T executeQuery(String query, SQLFunction<ResultSet, T> function, T defaultValue) {
+        try (var connection = this.pool.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             try (var resultSet = preparedStatement.executeQuery()) {
                 return function.apply(resultSet);
             } catch (Exception throwable) {
@@ -48,8 +69,8 @@ public final class SQLConnection {
         return defaultValue;
     }
 
-    public static int executeUpdate(String query) {
-        try (var connection = POOL.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    public int executeUpdate(String query) {
+        try (var connection = this.pool.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             return preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             System.err.println("Error while executing update: " + query);
